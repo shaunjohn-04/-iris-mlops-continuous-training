@@ -1,0 +1,8 @@
+v1/
+__pycache__/
+*.pyc
+.pytest_cache/
+mlruns/
+mlflow.db
+.venv/
+drift_report.html

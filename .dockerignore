@@ -1,0 +1,7 @@
+v1
+__pycache__
+.git
+.github
+mlruns
+mlflow.db
+.pytest_cache

@@ -1,0 +1,13 @@
+fastapi
+uvicorn
+mlflow==3.18.0
+scikit-learn==1.9.1
+numpy==2.5.5
+pandas==2.3.3
+scipy==1.18.1
+skops==0.16.0
+pydantic
+evidently>=0.7,<0.8
+pytest
+httpx
+requests

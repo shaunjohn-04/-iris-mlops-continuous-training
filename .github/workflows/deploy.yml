@@ -1,0 +1,56 @@
+name: Continuous Integration and Deployment
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+
+  build-and-deploy:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run Pytest
+        run: |
+          pytest -v
+
+      - name: Deploy to Linux VM
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USER }}
+          key: ${{ secrets.VM_SSH_KEY }}
+
+          script: |
+            cd ~/Mlops-demo
+
+            git pull origin main
+
+            docker build -t iris-mlops-api:latest .
+
+            docker stop iris-api || true
+
+            docker rm iris-api || true
+
+            docker run -d \
+              -p 8000:8000 \
+              --name iris-api \
+              -v "$(pwd)/mlflow.db:/app/mlflow.db" \
+              -v "$(pwd)/mlruns:/app/mlruns" \
+              iris-mlops-api:latest
